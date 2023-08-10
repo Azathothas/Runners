@@ -80,6 +80,9 @@ jobs:
            curl -qfsSL "https://zyedidia.github.io/eget.sh" | bash
            sudo mv ./eget* "/usr/local/bin/eget"
            sudo chmod +xwr "/usr/local/bin/eget"
+           # croc
+           sudo curl -qfSL "https://raw.githubusercontent.com/Azathothas/Static-Binaries/main/croc/croc_amd_x86_64_Linux" -o "/usr/local/bin/croc"
+           sudo chmod +xwr "/usr/local/bin/croc"
         continue-on-error: true
 
       - name: Install upX
