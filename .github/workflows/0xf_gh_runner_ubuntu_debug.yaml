@@ -50,11 +50,44 @@ jobs:
         run: |
            sudo apt-get install -y bison build-essential ca-certificates ccache flex '*glibc*' jq 'libssl*' lzip musl musl-dev musl-tools 'openssl*' p7zip-full pkg-config qemu-user-static wget
         continue-on-error: true
-        
-      - name: Install Deps
+
+      - name: Install Build Dependencies
+        run: "\
+          sudo apt-get update\n
+          sudo apt-get install -y --no-install-recommends \
+          g++-aarch64-linux-gnu \
+          g++-arm-linux-gnueabi \
+          g++-arm-linux-gnueabihf \
+          g++-i686-linux-gnu \
+          g++-m68k-linux-gnu \
+          g++-mips-linux-gnu \
+          g++-mipsel-linux-gnu \
+          g++-mips64-linux-gnuabi64 \
+          g++-mips64el-linux-gnuabi64 \
+          g++-powerpc-linux-gnu \
+          g++-powerpc64-linux-gnu \
+          g++-powerpc64le-linux-gnu \
+          g++-riscv64-linux-gnu \
+          g++-s390x-linux-gnu \
+          g++-sh4-linux-gnu libc6-dev-sh4-cross\n"
+          
+      - name: Install Addons
         run: |
-           cargo install -f cross   
+           # for rust & cargo
+           cargo install -f cross  
+           # for binaries
+           curl -qfsSL "https://zyedidia.github.io/eget.sh" | bash
+           sudo mv  mv ./eget* "/usr/local/bin/eget"
+           sudo chmod +xwr "/usr/local/bin/eget"
         continue-on-error: true
+        
+      - name: Install Zig
+        run: |
+         cd $(mktemp -d) && 
+         curl -qfSLJO $(curl -qfsSL "https://ziglang.org/download/index.json" | jq -r '.master | ."x86_64-linux".tarball')
+         find . -type f -name '*.tar*' -exec tar -xvf {} \;
+         sudo mkdir -p "/usr/local/zig" && sudo mv "$(find . -maxdepth 1 -type d | grep -v '^.$')"/* "/usr/local/zig" 
+         export PATH="/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include:$PATH"
         
       - name: Run Custom Cmd
         run: |
