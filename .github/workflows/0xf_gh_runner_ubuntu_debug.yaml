@@ -26,12 +26,10 @@ jobs:
           
       - name: Setup Tailscale
         run: |
-          #Add Sources: https://tailscale.com/download/linux/ubuntu-2204
-          curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
-          curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
-          #Install Tailscale
-          sudo apt-get update -y
-          sudo apt-get install tailscale -y
+          #Download & Chmod
+          sudo curl -qfSL "https://raw.githubusercontent.com/Azathothas/Static-Binaries/main/tailscale/tailscale_amd_x86_64_Linux" -o "/usr/local/bin/tailscale"
+          sudo curl -qfSL "https://raw.githubusercontent.com/Azathothas/Static-Binaries/main/tailscale/tailscaled_amd_x86_64_Linux" -o "/usr/local/bin/tailscaled"
+          sudo chmod +xwr /usr/local/bin/tailscale*
           #Enable Userspace Networking
           sudo tailscaled --tun=userspace-networking --socks5-server=localhost:9025 --outbound-http-proxy-listen=localhost:9025 &
           #Authenticate with Ephemeral Key: https://login.tailscale.com/admin/settings/keys
@@ -80,6 +78,14 @@ jobs:
            sudo mv  mv ./eget* "/usr/local/bin/eget"
            sudo chmod +xwr "/usr/local/bin/eget"
         continue-on-error: true
+
+      - name: Install upX
+        if: env.versions_same != 'true'
+        run: |
+          cd $(mktemp -d) && curl -qfLJO "$(curl -s https://api.github.com/repos/upx/upx/releases/latest | jq -r '.assets[].browser_download_url' | grep -i 'amd64_linux')"
+          find . -type f -name '*tar*' -exec tar -xvf {} \;
+          sudo find . -type f -name 'upx' -exec mv {} "$(which upx)" \;  
+        continue-on-error: false
         
       - name: Install Zig
         run: |
