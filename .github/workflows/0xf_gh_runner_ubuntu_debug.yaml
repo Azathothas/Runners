@@ -46,6 +46,8 @@ jobs:
       - name: Install CoreUtils
         #if: env.versions_same != 'true'
         run: |
+           sudo apt-get update -y
+           sudo apt-get --fix-missing
            sudo apt-get install -y bison build-essential ca-certificates ccache flex '*glibc*' jq 'libssl*' lzip musl musl-dev musl-tools 'openssl*' p7zip-full pkg-config qemu-user-static wget
         continue-on-error: true
 
