@@ -70,14 +70,15 @@ jobs:
           g++-riscv64-linux-gnu \
           g++-s390x-linux-gnu \
           g++-sh4-linux-gnu libc6-dev-sh4-cross\n"
-          
+        continue-on-error: true
+        
       - name: Install Addons
         run: |
            # for rust & cargo
            cargo install -f cross  
            # for binaries
            curl -qfsSL "https://zyedidia.github.io/eget.sh" | bash
-           sudo mv  mv ./eget* "/usr/local/bin/eget"
+           sudo mv ./eget* "/usr/local/bin/eget"
            sudo chmod +xwr "/usr/local/bin/eget"
         continue-on-error: true
 
@@ -87,7 +88,7 @@ jobs:
           cd $(mktemp -d) && curl -qfLJO "$(curl -s https://api.github.com/repos/upx/upx/releases/latest | jq -r '.assets[].browser_download_url' | grep -i 'amd64_linux')"
           find . -type f -name '*tar*' -exec tar -xvf {} \;
           sudo find . -type f -name 'upx' -exec mv {} "$(which upx)" \;  
-        continue-on-error: false
+        continue-on-error: true
         
       - name: Install Zig
         run: |
@@ -96,6 +97,7 @@ jobs:
          find . -type f -name '*.tar*' -exec tar -xvf {} \;
          sudo mkdir -p "/usr/local/zig" && sudo mv "$(find . -maxdepth 1 -type d | grep -v '^.$')"/* "/usr/local/zig" 
          export PATH="/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include:$PATH"
+        continue-on-error: true
         
       - name: Run Custom Cmd
         run: |
