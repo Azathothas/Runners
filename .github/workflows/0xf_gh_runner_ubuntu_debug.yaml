@@ -49,6 +49,9 @@ jobs:
            sudo apt-get update -y
            sudo apt-get --fix-missing
            sudo apt-get install -y bison build-essential ca-certificates ccache flex '*glibc*' jq 'libssl*' lzip musl musl-dev musl-tools 'openssl*' p7zip-full pkg-config qemu-user-static wget
+           sudo apt-get install -y --no-install-recommends autoconf automake autopoint binutils bison build-essential ca-certificates flex file jq patch patchelf pkg-config python3-pip qemu-user-static wget 
+           pip3 install scons
+           pip3 install staticx
         continue-on-error: true
 
       - name: Install Build Dependencies
