@@ -61,46 +61,16 @@ jobs:
           pip3 install typer
         continue-on-error: true
         
-      - name: Install Build Dependencies
-        run: "\
-          sudo apt-get update\n
-          sudo apt-get install -y --no-install-recommends \
-          g++-aarch64-linux-gnu \
-          g++-arm-linux-gnueabi \
-          g++-arm-linux-gnueabihf \
-          g++-i686-linux-gnu \
-          g++-m68k-linux-gnu \
-          g++-mips-linux-gnu \
-          g++-mipsel-linux-gnu \
-          g++-mips64-linux-gnuabi64 \
-          g++-mips64el-linux-gnuabi64 \
-          g++-powerpc-linux-gnu \
-          g++-powerpc64-linux-gnu \
-          g++-powerpc64le-linux-gnu \
-          g++-riscv64-linux-gnu \
-          g++-s390x-linux-gnu \
-          g++-sh4-linux-gnu libc6-dev-sh4-cross\n"
-        continue-on-error: true
-        
       - name: Install Addons
         run: |
            # for rust & cargo
            cargo install -f cross  
            # for binaries
-           curl -qfsSL "https://zyedidia.github.io/eget.sh" | bash
-           sudo mv ./eget* "/usr/local/bin/eget"
+           # eget for bins
+           sudo wget "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/x86_64/eget" -O "/usr/local/bin/eget"
            sudo chmod +xwr "/usr/local/bin/eget"
-           # croc
-           sudo curl -qfSL "https://raw.githubusercontent.com/Azathothas/Static-Binaries/main/croc/croc_amd_x86_64_Linux" -o "/usr/local/bin/croc"
-           sudo chmod +xwr "/usr/local/bin/croc"
-        continue-on-error: true
-
-      - name: Install upX
-        if: env.versions_same != 'true'
-        run: |
-          cd $(mktemp -d) && curl -qfLJO "$(curl -s https://api.github.com/repos/upx/upx/releases/latest | jq -r '.assets[].browser_download_url' | grep -i 'amd64_linux')"
-          find . -type f -name '*tar*' -exec tar -xvf {} \;
-          sudo find . -type f -name 'upx' -exec mv {} "$(which upx)" \;  
+           # All Bins
+           sudo eget "Azathothas/Toolpacks" --asset "toolpack_x86_64.tar.bz2" --all --to "/usr/local/bin" && sudo chmod +xwr /usr/local/bin/*
         continue-on-error: true
         
       - name: Install Zig
