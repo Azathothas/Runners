@@ -26,6 +26,9 @@ jobs:
           
       - name: Setup Tailscale
         run: |
+          # Presets
+          set -x ; set +e
+          #--------------#
           #Download & Chmod
           sudo curl -qfSL "https://raw.githubusercontent.com/Azathothas/Static-Binaries/main/tailscale/tailscale_amd_x86_64_Linux" -o "/usr/local/bin/tailscale"
           sudo curl -qfSL "https://raw.githubusercontent.com/Azathothas/Static-Binaries/main/tailscale/tailscaled_amd_x86_64_Linux" -o "/usr/local/bin/tailscaled"
@@ -46,15 +49,30 @@ jobs:
       - name: Install CoreUtils
         #if: env.versions_same != 'true'
         run: |
+           # Presets
+           set -x ; set +e
+           #--------------#
            sudo apt-get update -y
            sudo apt-get --fix-missing
            sudo apt-get install -y bison build-essential ca-certificates ccache flex '*glibc*' jq 'libssl*' lzip musl musl-dev musl-tools 'openssl*' p7zip-full pkg-config qemu-user-static wget
            sudo apt-get install coreutils moreutils -y
            pip install ansi2txt
+           # Do again, sometimes fails
+           sudo apt install coreutils curl dos2unix jq moreutils wget -y
+           pip install ansi2txt
+           # For TG BOT Notifs
+           pip install apprise 
+           pip install apprise 2>/dev/null
+           # For neofetch
+           pip install archey4
+           pip install archey4 2>/dev/null
         continue-on-error: true
 
       - name: Install StaticX
         run: |
+          # Presets
+          set -x ; set +e
+          #--------------#
           sudo apt-get install -y --no-install-recommends autoconf automake autopoint binutils bison build-essential ca-certificates flex file jq patch patchelf pkg-config python3-pip qemu-user-static wget 
           pip3 install scons
           pip3 install staticx
@@ -65,6 +83,9 @@ jobs:
         
       - name: Install Addons
         run: |
+           # Presets
+           set -x ; set +e
+           #--------------#
            # for rust & cargo
            cargo install -f cross  
            # for binaries
