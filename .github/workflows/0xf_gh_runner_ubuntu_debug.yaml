@@ -24,6 +24,14 @@ jobs:
         with:
           path: main
           
+      - name: Debloat
+        run: |
+          # Presets
+          set -x ; set +e
+          #--------------#
+          bash <(curl -qfsSL "https://raw.githubusercontent.com/Azathothas/Arsenal/main/misc/Github/Runners/Ubuntu/debloat.sh")
+        continue-on-error: true
+        
       - name: Setup Tailscale
         run: |
           # Presets
