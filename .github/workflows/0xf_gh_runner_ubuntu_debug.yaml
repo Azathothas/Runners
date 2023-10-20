@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 env:
   #Authenticate with Ephemeral Key: https://login.tailscale.com/admin/settings/keys
-  TSKEY: tskey-auth-ksYVhg1CNTRL-A5QDDdH66vU2pVMcgBy2wUYwzgL4Sv2F
+  TSKEY: tskey-auth-k3KTWh5CNTRL-kYo9vwCiYb145jHDcimjb1BXqDt2YipU5
   THOST: gh-runner-ubuntu
   TUSER: runner
   
