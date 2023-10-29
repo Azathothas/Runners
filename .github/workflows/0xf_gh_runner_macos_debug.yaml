@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
 env:
   #Authenticate with Ephemeral Key: https://login.tailscale.com/admin/settings/keys
-  TSKEY: tskey-auth-k99X9C6CNTRL-9vLLaJWxZBShRvNFSifuBSwvm3fijbBAE
-  THOST: gh-runner-macos
-  TUSER: runner
+  TSKEY: "tskey-auth-k99X9C6CNTRL-9vLLaJWxZBShRvNFSifuBSwvm3fijbBAE"
+  THOST: "gh-runner-macos"
+  TUSER: "runner"
   
 jobs:
   build:
