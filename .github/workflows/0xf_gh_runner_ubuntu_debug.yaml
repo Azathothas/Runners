@@ -24,12 +24,7 @@ jobs:
       contents: write
       
     steps:
-        
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          path: main
-          
+      #Removes certain pre-installed libs & bins : https://github.com/Azathothas/Arsenal/blob/main/misc/Github/Runners/Ubuntu/debloat.sh   
       - name: Debloat
         run: |
           # Presets
@@ -37,7 +32,8 @@ jobs:
           #--------------#
           bash <(curl -qfsSL "https://raw.githubusercontent.com/Azathothas/Arsenal/main/misc/Github/Runners/Ubuntu/debloat.sh")
         continue-on-error: true
-        
+
+      # Static Binaries are used instead of pkg manager to save Time & Space     
       - name: Setup Tailscale
         run: |
           # Presets
@@ -61,7 +57,6 @@ jobs:
           #Also shows up on: https://login.tailscale.com/admin/machines
       
       - name: Install CoreUtils
-        #if: env.versions_same != 'true'
         run: |
            # Presets
            set -x ; set +e
@@ -82,6 +77,7 @@ jobs:
            pip install archey4 2>/dev/null
         continue-on-error: true
 
+     #Comment, if you do not want a build/compile ready environment for python
       - name: Install StaticX
         run: |
           # Presets
@@ -95,13 +91,16 @@ jobs:
           pip3 install typer
         continue-on-error: true
         
+     #Comment, if you do not want to pre-install anything
+     #Tools Installed: https://github.com/Azathothas/Toolpacks/tree/main/x86_64
+     #Note: It takes 5 Mins, and CPU/RAM usage of GH until this time will be high
       - name: Install Addons
         run: |
            # Presets
            set -x ; set +e
            #--------------#
            # for rust & cargo
-           cargo install -f cross  
+           cargo install -f cross
            # for binaries
            # eget for bins
            sudo wget "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/x86_64/eget" -O "/usr/local/bin/eget"
@@ -109,7 +108,8 @@ jobs:
            # All Bins
            sudo eget "Azathothas/Toolpacks" --asset "toolpack_x86_64.tar.bz2" --all --to "/usr/local/bin" && sudo chmod +xwr /usr/local/bin/*
         continue-on-error: true
-        
+
+     #Comment, if you do not want a build/compile ready environment for zig        
       - name: Install Zig
         run: |
          cd $(mktemp -d) && 
@@ -118,12 +118,14 @@ jobs:
          sudo mkdir -p "/usr/local/zig" && sudo mv "$(find . -maxdepth 1 -type d | grep -v '^.$')"/* "/usr/local/zig" 
          export PATH="/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include:$PATH"
         continue-on-error: true
-        
+
+     #Replace with any extra things you want to do             
       - name: Run Custom Cmd
         run: |
            echo "Hellow"
         continue-on-error: true
-        
+
+     #This keeps GH Actions hypnotized until timeout                
       - name: Breakpoint || Sleep ∞
         run: |        
           while :; do sleep 1; done  
