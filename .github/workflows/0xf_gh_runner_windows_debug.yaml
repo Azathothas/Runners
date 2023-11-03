@@ -3,26 +3,31 @@ name: 0xf ➼ Debug (gh-runner) Windows-Server-2022
 on:
   workflow_dispatch:
 env:
-  #Authenticate with Ephemeral Key: https://login.tailscale.com/admin/settings/keys
-  TSKEY: "tskey-auth-k99X9C6CNTRL-9vLLaJWxZBShRvNFSifuBSwvm3fijbBAE"
-  #The hostname you want your machine to have
+  #Authenticate with [ Pre-Approved: Yes(No, if you intend to expose key publicly) | Ephemeral:Yes | ReUsable: Yes] Key: https://login.tailscale.com/admin/settings/keys
+  #DO NOT PUT A PRE_APPROVED HIGH PRIVILEGED KEY
+  # Use a secret [ ${{ secrets.TSKEY }} ] instead: https://github.com/Azathothas/Runners/settings/secrets/actions >> New Repository Secret >> Name = TSKEY
+  #If it's least privileged, NOT Pre-Approved and you don't care bots sshing into your machines, uncomment and replace with yours.
+  #TSKEY: "tskey-auth-k99X9C6CNTRL-9vLLaJWxZBShRvNFSifuBSwvm3fijbBAE"
+  #This is the machine name
   THOST: "gh-runner-windows"
-  #Password for RDP || SSH || Windows_ADMIN 
+  #This is okay to expose publicly because no one can access this anyway
+  #Password for RDP || SSH || Windows_ADMIN
   WINDOWS_PASSWORD: "0xff_WIN1337f#"
-  #Public SSH Keys
-  SSH_PUBLIC_KEY_URL: "https://github.com/Azathothas.keys" 
+  #Add your ssh public keys to github (This will allow you to login via SSH)
+  #Sadly, ssh on windows isn't supported by tailscale: https://github.com/tailscale/tailscale/issues/4697
+  #You can specify a gist or anything that will have your ssh public keys as plain text with LF , NOT CRLF
+  SSH_PUBLIC_KEY_URL: "https://github.com/Azathothas.keys"
   
 jobs:
-  build:
+  connect:
     runs-on: windows-latest
     #Default Timeout= 6 Hr (360 Mins) : https://nesin.io/blog/github-action-timeout
-    #Docs: https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration    
-    timeout-minutes: 690000000000  # Adjust the timeout as needed
+    #Docs: https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration
+    #It's best to cause this timeout from your own side (Low to No chance of GH Disabling your repo) rather than gh (High Chance of them disabling your repo)
+    timeout-minutes: 350
     
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-                
+     #Sys Info, primarily for debug
       - name: Get Sys-Info || Set User
         run: |
           # Print Basic Info
@@ -45,6 +50,7 @@ jobs:
           Write-Host $output  
         continue-on-error: true
 
+    #More Details: https://github.com/Azathothas/Static-Binaries/tree/main/tailscale#install-tailscale
       - name: Setup Tailscale
         run: |
           # Download the installer
@@ -54,10 +60,11 @@ jobs:
           # Run the service
           #Start-Process -NoNewWindow -FilePath "C:\Program Files\Tailscale\tailscale-ipn.exe"
           Start-Sleep -Seconds 2
-          Start-Process -NoNewWindow -FilePath "C:\Program Files\Tailscale\tailscale.exe" -ArgumentList "up", "--unattended", --hostname="${{ env.THOST }}", --authkey="${{ env.TSKEY }}"
+          Start-Process -NoNewWindow -FilePath "C:\Program Files\Tailscale\tailscale.exe" -ArgumentList "up", "--unattended", --hostname="${{ env.THOST }}", --authkey="${{ secrets.TSKEY }}"
         continue-on-error: true
         
-    #https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell    
+    #https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell
+    #You must have provided a direct URL containing your SSH Public keys, else this won't work
       - name: Configure SSH 
         run: |      
          # TailScale SSH is not supported on windows: https://github.com/tailscale/tailscale/issues/4697
@@ -88,7 +95,8 @@ jobs:
           ipconfig
           arp -A
         continue-on-error: true
-        
+
+     #Connects TailScale and prints details (Okay to expose Publicly)   
       - name: Print Connection Details
         run: |
          # TailScale --> Check Authentication
@@ -113,11 +121,13 @@ jobs:
          Write-Host "`n"
         continue-on-error: true
 
+     #Replace with any extra things you want to do
       - name: Run Custom Cmd
         run: |
            Write-Host "Hellow"
         continue-on-error: true
-        
+
+     #This keeps GH Actions hypnotized until timeout      
       - name: SSH (Breakpoint) || Sleep ∞
         run: |        
           #Finally ReStart 
