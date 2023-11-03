@@ -14,7 +14,7 @@ env:
   TUSER: "runner"
   
 jobs:
-  build:
+  connect:
     runs-on: ubuntu-latest
     #Default Timeout= 6 Hr (360 Mins) : https://nesin.io/blog/github-action-timeout
     #Docs: https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration
@@ -53,7 +53,8 @@ jobs:
           SSH_IP=$(sudo tailscale ip -4 | tr -d '\n')
           ssh_connection_string="SSH: ssh $USER@$SSH_IP"
           echo -e "$ssh_connection_string"
-          sleep 60s
+          #In case of debug
+          #sleep 60s
           #Also shows up on: https://login.tailscale.com/admin/machines
       
       - name: Install CoreUtils
