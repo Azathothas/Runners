@@ -3,9 +3,14 @@ name: 0xf ➼ Debug (gh-runner) Ubuntu-22.04
 on:
   workflow_dispatch:
 env:
-  #Authenticate with Ephemeral Key: https://login.tailscale.com/admin/settings/keys
-  TSKEY: "tskey-auth-k99X9C6CNTRL-9vLLaJWxZBShRvNFSifuBSwvm3fijbBAE"
+  #Authenticate with [ Pre-Approved: Yes(No, if you intend to expose key publicly) | Ephemeral:Yes | ReUsable: Yes] Key: https://login.tailscale.com/admin/settings/keys
+  #DO NOT PUT A PRE_APPROVED HIGH PRIVILEGED KEY
+  # Use a secret [ ${{ secrets.TSKEY }} ] instead: https://github.com/Azathothas/Runners/settings/secrets/actions >> New Repository Secret >> Name = TSKEY
+  #If it's least privileged, NOT Pre-Approved and you don't care bots sshing into your machines, uncomment and replace with yours.
+  #TSKEY: "tskey-auth-k99X9C6CNTRL-9vLLaJWxZBShRvNFSifuBSwvm3fijbBAE"
+  #This is the machine name
   THOST: "gh-runner-ubuntu"
+  #The Username for Runners
   TUSER: "runner"
   
 jobs:
@@ -13,7 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     #Default Timeout= 6 Hr (360 Mins) : https://nesin.io/blog/github-action-timeout
     #Docs: https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration
-    timeout-minutes: 690000 
+    #It's best to cause this timeout from your own side (Low to No chance of GH Disabling your repo) rather than gh (High Chance of them disabling your repo)
+    timeout-minutes: 350 
     permissions:
       contents: write
       
@@ -44,7 +50,7 @@ jobs:
           #Enable Userspace Networking
           sudo tailscaled --tun=userspace-networking --socks5-server=localhost:9025 --outbound-http-proxy-listen=localhost:9025 >/dev/null 2>&1 &
           #Authenticate with Ephemeral Key: https://login.tailscale.com/admin/settings/keys
-          sudo tailscale up --ssh --hostname="${{ env.THOST }}" --authkey="${{ env.TSKEY }}" 
+          sudo tailscale up --ssh --hostname="${{ env.THOST }}" --authkey="${{ secrets.TSKEY }}" 
           #Check Status
           sudo tailscale status --peers=false
           #Get SSH String
