@@ -74,7 +74,9 @@ jobs:
           #In case of debug
           #sleep 60s
           #Also shows up on: https://login.tailscale.com/admin/machines
-      
+          #Enable a proper sshd
+          curl -qfsSL "https://raw.githubusercontent.com/Azathothas/Arsenal/main/misc/Linux/Debian/setup_ssh_x86_64.sh" | sudo bash -s -- -f
+          
       - name: Install CoreUtils
         run: |
            # Presets
