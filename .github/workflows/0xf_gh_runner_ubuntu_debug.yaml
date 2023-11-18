@@ -151,28 +151,6 @@ jobs:
          sudo mkdir -p "/usr/local/zig" && sudo mv "$(find . -maxdepth 1 -type d | grep -v '^.$')"/* "/usr/local/zig" 
          export PATH="/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include:$PATH"
         continue-on-error: true
-
-      # Ref: https://github.com/actions/runner-images/issues/3660   
-      - name: Setup ng-SSH
-        run: |
-          # Presets
-          set +x ; set +e
-          #--------------#
-          ##Enable a proper sshd (Must be executed before tailscale can setup, else won't work) [Apply only when needed]
-          #curl -qfsSL "https://raw.githubusercontent.com/Azathothas/Arsenal/main/misc/Linux/Debian/setup_ssh_x86_64.sh" | sudo bash -s -- -f
-          #Remove Password Authentication
-          sudo sed -e 's/PasswordAuthentication yes/PasswordAuthentication no/g' -i "/etc/ssh/sshd_config"
-          #Generate & Create Keys
-          echo "yes" | ssh-keygen -N "" -t rsa -b 4096 -f "$HOME/.ssh/id_rsa"
-          #Add Public Key to Authorized Hosts
-          cat "$HOME/.ssh/id_rsa.pub" > "$HOME/.ssh/authorized_keys"
-          #Perms
-          sudo chown "runner:runner" "/home/runner/.ssh/authorized_keys"
-          sudo chown "runner:runner" "/home/runner/.ssh/authorized_keys"
-          chmod 700 "$HOME/.ssh" ; chmod 600 "$HOME/.ssh/authorized_keys"
-          #Auth & Connect
-          NGROK_TOKEN="${{ secrets.NGROK_TOKEN }}" TG_BOT_AUTH="${{ secrets.TG_BOT_AUTH }}" bash <(curl -qfsSL "https://raw.githubusercontent.com/Azathothas/Arsenal/main/misc/Github/Runners/Ubuntu/ngrok_tg_ssh.sh")
-        continue-on-error: true 
     
      #Replace with any extra things you want to do             
       - name: Run Custom Cmd
