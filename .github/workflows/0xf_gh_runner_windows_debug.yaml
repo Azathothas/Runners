@@ -66,6 +66,7 @@ jobs:
     #https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell
     #You must have provided a direct URL containing your SSH Public keys, else this won't work
     # Smth to try: https://github.com/euske/pyrexecd
+    #            : https://github.com/ferama/rospo
       - name: Configure SSH 
         run: |      
          # TailScale SSH is not supported on windows: https://github.com/tailscale/tailscale/issues/4697
