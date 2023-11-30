@@ -170,6 +170,7 @@ jobs:
          find . -type f -name '*.tar*' -exec tar -xvf {} \;
          sudo mkdir -p "/usr/local/zig" && sudo mv "$(find . -maxdepth 1 -type d | grep -v '^.$')"/* "/usr/local/zig"
          export PATH="/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include:$PATH"
+         zig version
         continue-on-error: true
 
      #Exports all PATHs to ~/.bash_profile            
@@ -178,6 +179,7 @@ jobs:
            # Source PATH
            echo '{ [ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"; } && { [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"; } && export PATH=$(echo "$HOME/bin:$HOME/.local/bin:/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include:$PATH" | awk '\''BEGIN{RS=":";ORS=":"}{gsub(/\n/,"");if(!a[$0]++)print}'\'' | sed '\''s/:*$//'\'')' | tee -a "$HOME/.bash_profile"
            #echo path
+           source "$HOME/.bash_profile"
            ppath -all
         continue-on-error: true
         
@@ -190,4 +192,4 @@ jobs:
      #This keeps GH Actions hypnotized until timeout                
       - name: Breakpoint || Sleep ∞
         run: |        
-          while :; do sleep 1; done  
+          while :; do sleep 1; done
