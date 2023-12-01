@@ -70,9 +70,10 @@ jobs:
           #Check Status
           sudo tailscale status --peers=false
           #Get SSH String
-          SSH_IP=$(sudo tailscale ip -4 | tr -d '\n')
+          SSH_IP="$(sudo tailscale ip -4 | tr -d '\n')"
+          TS_DNS="$(sudo tailscale status --json | jq -r '.Self.DNSName')"
           ssh_connection_string="SSH: ssh $USER@$SSH_IP"
-          echo -e "$ssh_connection_string"
+          echo -e "SSH: ssh "$USER@$SSH_IP" -o "StrictHostKeyChecking=no"\n     ssh "$USER@TS_DNS" -o "StrictHostKeyChecking=no""
           #In case of debug
           #sleep 60s
           #Also shows up on: https://login.tailscale.com/admin/machines
