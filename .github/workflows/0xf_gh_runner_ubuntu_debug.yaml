@@ -72,7 +72,9 @@ jobs:
           #Get SSH String
           SSH_IP="$(sudo tailscale ip -4 | tr -d '\n')" && export SSH_IP="$SSH_IP"
           TS_DNS="$(sudo tailscale status --json | jq -r '.Self.DNSName')" && export TS_DNS="$TS_DNS"
-          echo -e "SSH: ssh "$USER@$SSH_IP" -o "StrictHostKeyChecking=no"\n     ssh "$USER@TS_DNS" -o "StrictHostKeyChecking=no""
+          #PRINT Details
+          export GREEN='\033[32m' ; export BLUE='\033[34m' ; export YELLOW='\033[33m' ; export PURPLE='\033[35m' ; export VIOLET='\033[0;35m' ; export NC='\033[0m'
+          echo -e "${GREEN}SSH: ${YELLOW}ssh "$USER@$SSH_IP" -o "StrictHostKeyChecking=no${NC}"\n     ${YELLOW}ssh "$USER@$TS_DNS" -o "StrictHostKeyChecking=no${NC}""
           #In case of debug
           #sleep 60s
           #Also shows up on: https://login.tailscale.com/admin/machines
