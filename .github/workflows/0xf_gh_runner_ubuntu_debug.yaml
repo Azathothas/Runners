@@ -55,7 +55,7 @@ jobs:
       - name: Setup Tailscale
         run: |
           # Presets
-          set -x ; set +e
+          set +x ; set +e
           #--------------#
           ##Enable a proper sshd (Must be executed before tailscale can setup, else won't work) [Apply only when needed]
           #curl -qfsSL "https://raw.githubusercontent.com/Azathothas/Arsenal/main/misc/Linux/Debian/setup_ssh_x86_64.sh" | sudo bash -s -- -f
