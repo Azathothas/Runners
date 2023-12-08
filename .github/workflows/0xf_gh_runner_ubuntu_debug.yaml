@@ -179,9 +179,15 @@ jobs:
       - name: Export PATH
         run: |
            # Source PATH
-           echo '{ [ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"; } && { [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"; } && export PATH=$(echo "$HOME/bin:$HOME/.local/bin:/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include:$PATH" | awk '\''BEGIN{RS=":";ORS=":"}{gsub(/\n/,"");if(!a[$0]++)print}'\'' | sed '\''s/:*$//'\'')' | tee -a "$HOME/.bash_profile"
+           # "$HOME/.bash_profile"
+           echo '{ [ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"; } && { [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"; } && export PATH=$(echo "$PATH:$HOME/bin:$HOME/.local/bin:/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include" | awk '\''BEGIN{RS=":";ORS=":"}{gsub(/\n/,"");if(!a[$0]++)print}'\'' | sed '\''s/:*$//'\'')' | tee -a "$HOME/.bash_profile"
+           # "$HOME/.bashrc"
+           echo '{ [ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"; } && { [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"; } && export PATH=$(echo "$PATH:$HOME/bin:$HOME/.local/bin:/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include" | awk '\''BEGIN{RS=":";ORS=":"}{gsub(/\n/,"");if(!a[$0]++)print}'\'' | sed '\''s/:*$//'\'')' | tee -a "$HOME/.bashrc"
+           # "$HOME/.zshrc"
+           #echo '{ [ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"; } && { [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"; } && export PATH=$(echo "$PATH:$HOME/bin:$HOME/.local/bin:/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include" | awk '\''BEGIN{RS=":";ORS=":"}{gsub(/\n/,"");if(!a[$0]++)print}'\'' | sed '\''s/:*$//'\'')' | tee -a "$HOME/.zshrc"
            #echo path
            source "$HOME/.bash_profile"
+           source "$HOME/.bashrc"
            ppath -all
         continue-on-error: true
         
