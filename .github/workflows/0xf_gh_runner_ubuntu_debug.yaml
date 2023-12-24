@@ -126,6 +126,17 @@ jobs:
            #sudo 7z e "./toolpack_x86_64.7z" -o"/usr/local/bin" -y 2>/dev/null && sudo rm -rf "/usr/local/bin/toolpack_x86_64" 2>/dev/null && sudo rm -rf "./toolpack_x86_64.7z" 2>/dev/null ; sudo chmod +xwr /usr/local/bin/* 2>/dev/null
         continue-on-error: true
 
+      - name: Install Alsa-Libs (libasound)
+        run: |
+          # Presets
+          set -x ; set +e
+          #--------------#
+          sudo apt-get install alsa-base alsa-utils linux-sound-base libasound2-dev libfl-dev libjack-dev librust-cpal-dev libxi-dev libxtst-dev -y
+          pushd "$(mktemp -d)" && git clone --filter "blob:none" "https://github.com/alsa-project/alsa-lib" && cd "alsa-lib"
+          bash "./gitcompile" ; "./configure" --enable-shared=no --enable-static=yes
+          sudo make install ; popd
+        continue-on-error: true
+
       - name: Install Meson & Ninja
         run: |
           #Presets
