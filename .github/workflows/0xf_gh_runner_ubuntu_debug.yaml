@@ -265,7 +265,7 @@ jobs:
           #Test
           find "./progs" -type f -exec strip {} 2>/dev/null \; 2>/dev/null
           file "./progs/"* 2>/dev/null && ldd "./progs/"* 2>/dev/null
-          ls -sh "./progs/"* ; chmdo +xwr "./progs/"* ; "./progs/tput" -V
+          ls -sh "./progs/"* ; chmod +xwr "./progs/"* ; "./progs/tput" -V
           #Install
           sudo make install ; tput -V ; popd
         continue-on-error: true
