@@ -48,6 +48,7 @@ jobs:
           #PRINT Details
           export GREEN='\033[32m' ; export BLUE='\033[34m' ; export YELLOW='\033[33m' ; export PURPLE='\033[35m' ; export VIOLET='\033[0;35m' ; export NC='\033[0m'
           echo -e "${GREEN}SSH: ${YELLOW}ssh "$USER@$SSH_IP" -o "StrictHostKeyChecking=no${NC}"\n     ${YELLOW}ssh "$USER@$TS_DNS" -o "StrictHostKeyChecking=no${NC}""
+          echo -e "\n [+] ${GREEN}openvscode-server: ${BLUE}http://$TS_DNS:8080${NC}\n"
           #In case of debug
           #sleep 60s
           #Also shows up on: https://login.tailscale.com/admin/machines
@@ -159,6 +160,22 @@ jobs:
            mkdir -p "$HOME/bin" ; 7z e "./toolpack_x86_64.7z" -o"$HOME/bin" -y && rm -rf "$HOME/bin/toolpack_x86_64" 2>/dev/null && rm -rf "./toolpack_x86_64.7z" ; chmod +xwr $HOME/bin/* 2>/dev/null
            # "/usr/local/bin"
            #sudo 7z e "./toolpack_x86_64.7z" -o"/usr/local/bin" -y 2>/dev/null && sudo rm -rf "/usr/local/bin/toolpack_x86_64" 2>/dev/null && sudo rm -rf "./toolpack_x86_64.7z" 2>/dev/null ; sudo chmod +xwr /usr/local/bin/* 2>/dev/null
+        continue-on-error: true
+
+      - name: Setup openvscode-server (gitpod)
+        run: |
+          # Presets
+          set -x ; set +e
+          #--------------#
+          # Source : https://github.com/gitpod-io/openvscode-server
+          #Setup Dirs
+          rm "$HOME/openvscode-server" -rf && mkdir -p "$HOME/openvscode-server" && cd "$HOME/openvscode-server"
+          #Download latest release
+          eget "gitpod-io/openvscode-server" --asset "linux" --asset "64" --asset "^arm" --download-only
+          #Extract
+          find -type f -name "*tar.gz*" -exec tar xvfz {} --strip-components=1 \; && find -type f -name "*tar.gz*" -exec rm {} -rf \;
+          #Run & Fork to bg
+          nohup "$HOME/openvscode-server/bin/openvscode-server" --host "0.0.0.0" --port "8080" --telemetry-level off --accept-server-license-terms --without-connection-token >/dev/null 2>&1 &
         continue-on-error: true
 
       - name: Install Alsa-Libs (libasound)
@@ -323,4 +340,4 @@ jobs:
           #sleep infinity
           #while :; do sleep 1; done
           sleep 340m
-        continue-on-error: true          
+        continue-on-error: true
