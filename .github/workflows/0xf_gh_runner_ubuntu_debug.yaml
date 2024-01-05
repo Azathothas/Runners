@@ -101,6 +101,18 @@ jobs:
            pip install archey4 2>/dev/null
         continue-on-error: true
 
+    ##Needed until gh runners updates go version: https://github.com/actions/runner-images/blob/main/images/linux/Ubuntu2204-Readme.md
+    ## It helps to be on bleeding edge anyway
+      - name: Install/Update golang
+        run: |
+          #Presets
+          set -x ; set +e
+          #--------------#
+          echo "yes" | bash <(curl -qfsSL "https://git.io/go-installer")
+          source "$HOME/.bashrc"
+          go version
+        continue-on-error: true
+        
      #Comment, if you do not want a build/compile ready environment for python
       - name: Install StaticX
         run: |
