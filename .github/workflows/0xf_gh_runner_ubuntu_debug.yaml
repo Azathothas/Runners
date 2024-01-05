@@ -132,7 +132,7 @@ jobs:
            sudo eget "https://raw.githubusercontent.com/Azathothas/Toolpacks/main/x86_64/ppath" --to "/usr/local/bin/ppath"
            # All Bins
            #sudo eget "Azathothas/Toolpacks" --asset "toolpack_x86_64.tar.bz2" --all --to "/usr/local/bin" && sudo chmod +xwr /usr/local/bin/*
-           wget "$(curl -qfsSL "https://api.github.com/repos/Azathothas/Toolpacks/releases" | jq -r '.[] | select(.assets[].name | contains("x86_64")) | .assets[].browser_download_url' | grep -i '.7z$' | sort -u | tail -n 1)" -O "./toolpack_x86_64.7z"
+           wget --quiet --show-progress --progress="dot:giga" "$(curl -qfsSL "https://api.github.com/repos/Azathothas/Toolpacks/releases" | jq -r '.[] | select(.assets[].name | contains("x86_64")) | .assets[].browser_download_url' | grep -i '.7z$' | sort -u | tail -n 1)" -O "./toolpack_x86_64.7z"
            # "$HOME/bin"
            mkdir -p "$HOME/bin" ; 7z e "./toolpack_x86_64.7z" -o"$HOME/bin" -y && rm -rf "$HOME/bin/toolpack_x86_64" 2>/dev/null && rm -rf "./toolpack_x86_64.7z" ; chmod +xwr $HOME/bin/* 2>/dev/null
            # "/usr/local/bin"
@@ -297,7 +297,7 @@ jobs:
           #--------------#
           #changelogs: https://invisible-island.net/ncurses/NEWS.html
           #Create tmp dir & get latest stable sources
-          pushd "$(mktemp -d)" && wget --quiet "https://invisible-island.net/datafiles/release/ncurses.tar.gz"
+          pushd "$(mktemp -d)" && wget --quiet --show-progress --progress="dot:giga" "https://invisible-island.net/datafiles/release/ncurses.tar.gz"
           find . -type f -name "*.tar.gz*" -exec tar -xvf {} \; 2>/dev/null
           cd "$(find . -maxdepth 1 -type d -name "*ncurses*" | grep -v "^.$")"
           #https://invisible-island.net/ncurses/INSTALL.html
