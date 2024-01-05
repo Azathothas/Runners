@@ -44,7 +44,7 @@ jobs:
           sudo tailscale status --peers=false
           #Get SSH String
           SSH_IP="$(sudo tailscale ip -4 | tr -d '\n')" && export SSH_IP="$SSH_IP"
-          TS_DNS="$(sudo tailscale status --json | jq -r '.Self.DNSName')" && export TS_DNS="$TS_DNS"
+          TS_DNS="$(sudo tailscale status --json | jq -r '.Self.DNSName' | sed 's/\.$//')" && export TS_DNS="$TS_DNS"
           #PRINT Details
           export GREEN='\033[32m' ; export BLUE='\033[34m' ; export YELLOW='\033[33m' ; export PURPLE='\033[35m' ; export VIOLET='\033[0;35m' ; export NC='\033[0m'
           echo -e "${GREEN}SSH: ${YELLOW}ssh "$USER@$SSH_IP" -o "StrictHostKeyChecking=no${NC}"\n     ${YELLOW}ssh "$USER@$TS_DNS" -o "StrictHostKeyChecking=no${NC}""
@@ -114,29 +114,6 @@ jobs:
           go version
         continue-on-error: true
         
-     #Comment, if you do not want a build/compile ready environment for python
-      - name: Install StaticX
-        run: |
-          # Presets
-          set -x ; set +e
-          #--------------#
-          pip3 install scons
-          pip3 install staticx
-          pip3 install pyinstaller
-          pip3 install py2static
-          pip3 install typer
-        continue-on-error: true
-        
-     #Comment, if you do not want a build/compile ready environment for rust      
-      - name: Install Rust ToolChains
-        run: |
-           # Presets
-           set -x ; set +e
-           #--------------#
-           # for rust & cargo
-           cargo install -f cross
-        continue-on-error: true
-        
      #Comment, if you do not want to pre-install anything
      #Tools Installed: https://github.com/Azathothas/Toolpacks/tree/main/x86_64
      #Note: It takes 1-2 Mins, and CPU/RAM usage of GH until this time will be high
@@ -162,6 +139,25 @@ jobs:
            #sudo 7z e "./toolpack_x86_64.7z" -o"/usr/local/bin" -y 2>/dev/null && sudo rm -rf "/usr/local/bin/toolpack_x86_64" 2>/dev/null && sudo rm -rf "./toolpack_x86_64.7z" 2>/dev/null ; sudo chmod +xwr /usr/local/bin/* 2>/dev/null
         continue-on-error: true
 
+     #Exports all PATHs to ~/.bash_profile            
+      - name: Export PATH
+        run: |
+           # Presets
+           set -x ; set +e
+           #--------------#        
+           # Source PATH
+           # "$HOME/.bash_profile"
+           echo '{ [ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"; } && { [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"; } && export PATH=$(echo "$PATH:$HOME/bin:$HOME/.local/bin:/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include" | awk '\''BEGIN{RS=":";ORS=":"}{gsub(/\n/,"");if(!a[$0]++)print}'\'' | sed '\''s/:*$//'\'')' | tee -a "$HOME/.bash_profile"
+           # "$HOME/.bashrc"
+           echo '{ [ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"; } && { [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"; } && export PATH=$(echo "$PATH:$HOME/bin:$HOME/.local/bin:/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include" | awk '\''BEGIN{RS=":";ORS=":"}{gsub(/\n/,"");if(!a[$0]++)print}'\'' | sed '\''s/:*$//'\'')' | tee -a "$HOME/.bashrc"
+           # "$HOME/.zshrc"
+           #echo '{ [ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"; } && { [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"; } && export PATH=$(echo "$PATH:$HOME/bin:$HOME/.local/bin:/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include" | awk '\''BEGIN{RS=":";ORS=":"}{gsub(/\n/,"");if(!a[$0]++)print}'\'' | sed '\''s/:*$//'\'')' | tee -a "$HOME/.zshrc"
+           #echo path
+           source "$HOME/.bash_profile"
+           source "$HOME/.bashrc"
+           ppath -all
+        continue-on-error: true
+        
       - name: Setup openvscode-server (gitpod)
         run: |
           # Presets
@@ -176,6 +172,29 @@ jobs:
           find -type f -name "*tar.gz*" -exec tar xvfz {} --strip-components=1 \; && find -type f -name "*tar.gz*" -exec rm {} -rf \;
           #Run & Fork to bg
           nohup "$HOME/openvscode-server/bin/openvscode-server" --host "0.0.0.0" --port "8080" --telemetry-level off --accept-server-license-terms --without-connection-token >/dev/null 2>&1 &
+        continue-on-error: true
+        
+     #Comment, if you do not want a build/compile ready environment for rust      
+      - name: Install Rust ToolChains
+        run: |
+           # Presets
+           set -x ; set +e
+           #--------------#
+           # for rust & cargo
+           cargo install -f cross
+        continue-on-error: true
+
+     #Comment, if you do not want a build/compile ready environment for python
+      - name: Install StaticX
+        run: |
+          # Presets
+          set -x ; set +e
+          #--------------#
+          pip3 install scons
+          pip3 install staticx
+          pip3 install pyinstaller
+          pip3 install py2static
+          pip3 install typer
         continue-on-error: true
 
       - name: Install Alsa-Libs (libasound)
@@ -301,25 +320,6 @@ jobs:
           ls -sh "./progs/"* ; chmod +xwr "./progs/"* ; "./progs/tput" -V
           #Install
           sudo make install ; tput -V ; popd
-        continue-on-error: true
-           
-     #Exports all PATHs to ~/.bash_profile            
-      - name: Export PATH
-        run: |
-           # Presets
-           set -x ; set +e
-           #--------------#        
-           # Source PATH
-           # "$HOME/.bash_profile"
-           echo '{ [ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"; } && { [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"; } && export PATH=$(echo "$PATH:$HOME/bin:$HOME/.local/bin:/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include" | awk '\''BEGIN{RS=":";ORS=":"}{gsub(/\n/,"");if(!a[$0]++)print}'\'' | sed '\''s/:*$//'\'')' | tee -a "$HOME/.bash_profile"
-           # "$HOME/.bashrc"
-           echo '{ [ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"; } && { [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"; } && export PATH=$(echo "$PATH:$HOME/bin:$HOME/.local/bin:/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include" | awk '\''BEGIN{RS=":";ORS=":"}{gsub(/\n/,"");if(!a[$0]++)print}'\'' | sed '\''s/:*$//'\'')' | tee -a "$HOME/.bashrc"
-           # "$HOME/.zshrc"
-           #echo '{ [ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"; } && { [ -d "$HOME/.local/bin" ] || mkdir -p "$HOME/.local/bin"; } && export PATH=$(echo "$PATH:$HOME/bin:$HOME/.local/bin:/usr/local/zig:/usr/local/zig/lib:/usr/local/zig/lib/include" | awk '\''BEGIN{RS=":";ORS=":"}{gsub(/\n/,"");if(!a[$0]++)print}'\'' | sed '\''s/:*$//'\'')' | tee -a "$HOME/.zshrc"
-           #echo path
-           source "$HOME/.bash_profile"
-           source "$HOME/.bashrc"
-           ppath -all
         continue-on-error: true
         
      #Replace with any extra things you want to do             
