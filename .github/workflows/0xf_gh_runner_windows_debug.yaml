@@ -133,7 +133,7 @@ jobs:
       - name: SSH (Breakpoint) || Sleep ∞
         run: |        
           #Finally ReStart 
-          Stop-Process -Name sshd -Force 2>$null
+          Stop-Process -Name sshd -Force 2>$null -ErrorAction SilentlyContinue
           Start-Process -Wait -FilePath "C:\Program Files\OpenSSH-Win64\sshd.exe" -WindowStyle Hidden ; Start-Sleep 5
           #Check 
           Get-Process -Name sshd   
