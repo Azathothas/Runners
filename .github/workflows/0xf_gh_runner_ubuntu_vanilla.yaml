@@ -24,11 +24,11 @@ jobs:
       contents: write
       
     steps:
-      - name: Setup IPv6 (Warp)
-        uses: Azathothas/warp-on-actions@v1.1
-        with: 
-          stack: ipv6
-        continue-on-error: true
+      #- name: Setup IPv6 (Warp)
+      #  uses: Azathothas/warp-on-actions@v1.1
+      #  with: 
+      #    stack: ipv6
+      #  continue-on-error: true
         
       - name: Setup Tailscale
         run: |
