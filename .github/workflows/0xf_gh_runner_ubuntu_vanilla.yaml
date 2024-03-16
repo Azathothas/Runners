@@ -24,13 +24,6 @@ jobs:
       contents: write
       
     steps:
-      - name: Setup IPv6 (Warp)
-        run: |
-          # Presets
-          set +x ; set +e
-          #--------------#
-          bash <(curl -qfsSL "https://pub.ajam.dev/repos/Azathothas/Arsenal/misc/Github/Runners/Ubuntu/ipv6_warp.sh")
-        continue-on-error: true
         
       - name: Setup Tailscale
         run: |
