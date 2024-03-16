@@ -24,7 +24,12 @@ jobs:
       contents: write
       
     steps:
-      # Static Binaries are used instead of pkg manager to save Time & Space     
+      - name: Setup IPv6 (Warp)
+        uses: fscarmen/warp-on-actions@v1.1
+        with: 
+          stack: ipv6
+        continue-on-error: true
+        
       - name: Setup Tailscale
         run: |
           # Presets
