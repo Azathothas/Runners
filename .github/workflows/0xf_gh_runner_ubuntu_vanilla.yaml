@@ -25,7 +25,7 @@ jobs:
       
     steps:
       - name: Setup IPv6 (Warp)
-        uses: fscarmen/warp-on-actions@v1.1
+        uses: Azathothas/warp-on-actions@v1.1
         with: 
           stack: ipv6
         continue-on-error: true
