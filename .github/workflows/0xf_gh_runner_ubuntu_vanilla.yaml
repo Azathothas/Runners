@@ -12,6 +12,7 @@ env:
   THOST: "gh-runner-ubuntu-vanilla"
   #The Username for Runners
   TUSER: "runner"
+  TSKEY: "${{ secrets.TSKEY }}"
   
 jobs:
   connect:
