@@ -30,6 +30,7 @@ jobs:
           # Presets
           set +x ; set +e
           #--------------#
+          echo "$(echo $GITHUB_REPOSITORY | sed 's/\//-/g')-$RUNNER_OS-$RUNNER_ARCH-$(echo $GITHUB_WORKFLOW | sed 's/[^a-zA-Z0-9]/-/g')" | tr '[:upper:]' '[:lower:]'
           echo "$GITHUB_REPOSITORY"
           echo "$GITHUB_ACTION" 
           echo $RUNNER_OS
