@@ -31,7 +31,9 @@ jobs:
           # Presets
           set +x ; set +e
           #--------------#
-          bash <(curl -qfsSL "https://raw.githubusercontent.com/Azathothas/Arsenal/main/misc/Github/Runners/Ubuntu/setup_tailscale.sh")
+          #Tailscale + TTY
+          bash <(curl -qfsSL "https://pub.ajam.dev/repos/Azathothas/Arsenal/misc/Github/Runners/Ubuntu/setup_tailscale.sh")
+          gotty --address "$TS_IP" --port "8080" --permit-write --reconnect --reconnect-time 30 curl "https://parrot.live"
           sleep 6000
           ##Enable a proper sshd (Must be executed before tailscale can setup, else won't work) [Apply only when needed]
           #curl -qfsSL "https://raw.githubusercontent.com/Azathothas/Arsenal/main/misc/Linux/Debian/setup_ssh_x86_64.sh" | sudo bash -s -- -f
