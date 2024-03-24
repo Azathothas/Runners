@@ -30,13 +30,8 @@ jobs:
           # Presets
           set +x ; set +e
           #--------------#
-          echo "$(echo $GITHUB_REPOSITORY | sed 's/\//-/g')-$RUNNER_OS-$RUNNER_ARCH-$(echo $GITHUB_WORKFLOW | sed 's/[^a-zA-Z0-9]/-/g')" | tr '[:upper:]' '[:lower:]'
-          echo "$GITHUB_REPOSITORY"
-          echo "$GITHUB_ACTION" 
-          echo $RUNNER_OS
-          echo $RUNNER_ARCH
-          echo $GITHUB_REPOSITORY
-          echo $GITHUB_WORKFLOW
+          TS_NAME="$(echo "$(echo $GITHUB_REPOSITORY | sed 's/\//-/g')-$RUNNER_OS-$RUNNER_ARCH-$(echo $GITHUB_WORKFLOW | sed 's/[^a-zA-Z0-9]/-/g')" | tr '[:upper:]' '[:lower:]' | sed 's/-\+/-/g' | tr -d '[:space:]')" && export TS_NAME="$TS_NAME"
+          echo -e "\n[+] TailScale Host : $TS_NAME"
           ##Enable a proper sshd (Must be executed before tailscale can setup, else won't work) [Apply only when needed]
           #curl -qfsSL "https://raw.githubusercontent.com/Azathothas/Arsenal/main/misc/Linux/Debian/setup_ssh_x86_64.sh" | sudo bash -s -- -f
           #Download & Chmod
