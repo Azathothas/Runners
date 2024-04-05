@@ -250,7 +250,8 @@ jobs:
           eget "https://www.nasm.us/pub/nasm/snapshots/latest/win64/$env:EGET_LINK" --file "nasm.exe" --to "$env:SYSTEMROOT/nasm.exe"
           eget "https://www.nasm.us/pub/nasm/snapshots/latest/win64/$env:EGET_LINK" --file "ndisasm.exe" --to "$env:SYSTEMROOT/ndisasm.exe"
           #Openssl [Not compatible with: boringssl |libressl]
-          choco install "openssl" --prerelease --force --yes
+          #choco install "openssl" --prerelease --force --yes
+          scoop install "main/openssl" --global --no-cache ; refreshenv ; openssl version
           #vcpkg install "openssl" --clean-after-build
           vcpkg install "openssl:x64-windows-static" --clean-after-build
           #vcpkg integrate install
