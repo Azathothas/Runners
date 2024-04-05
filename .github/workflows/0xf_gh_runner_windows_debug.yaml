@@ -151,6 +151,7 @@ jobs:
         run: |
           #presets
           $ErrorActionPreference = "SilentlyContinue" ; $env:ErrorActionPreference = "SilentlyContinue"
+          Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" ; refreshenv
           #7z
           choco install "7zip.install" --prerelease --force --yes          
           #alsa 
@@ -192,6 +193,7 @@ jobs:
         run: |
           #presets
           $ErrorActionPreference = "SilentlyContinue" ; $env:ErrorActionPreference = "SilentlyContinue"
+          Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" ; refreshenv
           #-------------#
           #b3sum
           eget "https://bin.ajam.dev/x64_Windows/b3sum.exe" --to "$env:SYSTEMROOT/b3sum.exe"
@@ -244,6 +246,8 @@ jobs:
           eget "https://bin.ajam.dev/x64_Windows/croc.exe" --to "$env:SYSTEMROOT/croc.exe"
           #dust
           eget "https://bin.ajam.dev/x64_Windows/dust.exe" --to "$env:SYSTEMROOT/dust.exe"
+          #gdu
+          eget "https://bin.ajam.dev/x64_Windows/gdu.exe" --to "$env:SYSTEMROOT/gdu.exe"
           #upx
           eget "https://bin.ajam.dev/x64_Windows/upx.exe" --to "$env:SYSTEMROOT/upx.exe"
           #wldd
@@ -256,6 +260,7 @@ jobs:
         run: |
           #presets
           $ErrorActionPreference = "SilentlyContinue" ; $env:ErrorActionPreference = "SilentlyContinue"
+          Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" ; refreshenv
           #-------------#
           (env | Select-String -Pattern "GOROOT_" | ForEach-Object { ($_ -split "=")[1] }).Trim() | ForEach-Object { Remove-Item -Path $_ -Recurse -Force -ErrorAction SilentlyContinue }
           Remove-Item "Env:\GOPATH","Env:\GOROOT","Env:\GOTOOLDIR" -ErrorAction SilentlyContinue
@@ -272,6 +277,7 @@ jobs:
         run: |
           #presets
           $ErrorActionPreference = "SilentlyContinue" ; $env:ErrorActionPreference = "SilentlyContinue"
+          Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" ; refreshenv
           #-------------#   
           #nasm
           choco install "nasm" --prerelease --force --yes
@@ -302,6 +308,7 @@ jobs:
         run: |
           #presets
           $ErrorActionPreference = "SilentlyContinue" ; $env:ErrorActionPreference = "SilentlyContinue"
+          Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" ; refreshenv
           #-------------#                     
           ##rust
           if (-not (Get-Command -Name rustup -ErrorAction SilentlyContinue)) {
@@ -316,6 +323,7 @@ jobs:
         run: |
           #presets
           $ErrorActionPreference = "SilentlyContinue" ; $env:ErrorActionPreference = "SilentlyContinue"
+          Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" ; refreshenv
           #-------------#   
           scoop install "versions/zig-dev" --global --no-cache ; refreshenv ; zig version
         continue-on-error: true
@@ -324,6 +332,7 @@ jobs:
         run: |
           #presets
           $ErrorActionPreference = "SilentlyContinue" ; $env:ErrorActionPreference = "SilentlyContinue"
+          Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1" ; refreshenv
           #-------------#  
           scoop install "main/pkg-config" --global --no-cache ; refreshenv
           $env:PKG_CONFIG_ALLOW_SYSTEM_LIBS = "1" ; echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=$env:PKG_CONFIG_ALLOW_SYSTEM_LIBS" >> "$GITHUB_ENV"
