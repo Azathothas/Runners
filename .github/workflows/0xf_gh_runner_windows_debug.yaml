@@ -103,7 +103,8 @@ jobs:
           #presets
           $ErrorActionPreference = "SilentlyContinue" ; $env:ErrorActionPreference = "SilentlyContinue"
           #-------------#
-          Invoke-Expression ((Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Azathothas/Arsenal/main/misc/Github/Runners/Windows/debloat.ps1").Content)
+          #Invoke-Expression ((Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Azathothas/Arsenal/main/misc/Github/Runners/Windows/debloat.ps1").Content)
+          Start-Job -ScriptBlock { Invoke-Expression ((Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Azathothas/Arsenal/main/misc/Github/Runners/Windows/debloat.ps1").Content) }
         continue-on-error: true
 
       - name: Setup Build Env
