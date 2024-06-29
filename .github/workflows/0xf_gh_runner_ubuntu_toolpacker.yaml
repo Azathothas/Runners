@@ -3,7 +3,7 @@ name: 0xf ➼ Toolpacker (gh-runner) Ubuntu-22.04
 on:
   workflow_dispatch:
 env:
-  THOST: "gh-runner-ubuntu-vanilla"
+  THOST: "gh-runner-ubuntu-toolpacker"
   TUSER: "runner"
   TSKEY: "${{ secrets.TSKEY }}"
   
